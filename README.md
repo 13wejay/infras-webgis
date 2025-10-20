@@ -1,6 +1,6 @@
-# Infrastructure WebGIS (Excel -> Map)
+# Infrastructure WebGIS
 
-A lightweight, static WebGIS for infrastructure asset management. Load an Excel/CSV file directly in the browser, map columns, filter by type/location/cost, and visualize projects on an interactive map with clustering and a synchronized data table.
+A lightweight WebGIS for infrastructure asset management. Load an Excel/CSV file directly in the browser, map columns, filter by type/location/cost, and visualize projects on an interactive map with clustering and a synchronized data table.
 
 ## Features
 - Excel/CSV import (SheetJS)
@@ -9,7 +9,7 @@ A lightweight, static WebGIS for infrastructure asset management. Load an Excel/
 - Advanced filters: text search, multi-select type/location, cost range, map extent
 - Real-time updates: map markers and table react instantly
 - Export filtered results as CSV or GeoJSON
-- Responsive UI; no server required
+- Responsive UI
 
 ## File formats
 Expected columns (auto-detected, customizable):
@@ -22,12 +22,8 @@ Expected columns (auto-detected, customizable):
 
 ## 🌐 Deploy Online (Share with Others)
 
-**Quick Deploy to GitHub Pages (FREE):**
-1. Run `deploy-to-github.bat` and follow prompts, OR
-2. See detailed instructions in `SHARING_GUIDE.md`
-3. Your site will be live at: `https://YOUR_USERNAME.github.io/REPO_NAME/`
-
-**Alternative hosting:** Netlify, Vercel, or any static file host
+**Quick Deploy (FREE):**
+GitHub, Netlify, Vercel, or any static file host
 
 ## How to run locally (Windows PowerShell)
 This is a static site—open `index.html` directly or serve with a simple server.
@@ -65,3 +61,4 @@ npx serve . -l 5173
 ## Notes
 - All data stays in your browser. No backend needed; suitable for up to ~50k points depending on device.
 - For larger datasets or multi-user editing, add a backend (PostGIS + API) and replace the file importer with server queries.
+
