@@ -1,4 +1,4 @@
-# Infrastructure WebGIS
+# Infrastructure WebGIS [Work in Progress. Not final product]
 
 A lightweight WebGIS for infrastructure asset management. Load an Excel/CSV file directly in the browser, map columns, filter by type/location/cost, and visualize projects on an interactive map with clustering and a synchronized data table.
 
@@ -55,5 +55,6 @@ python -m http.server 5173
 ## Notes
 - All data stays in your browser. No backend needed; suitable for up to ~50k points depending on device.
 - For larger datasets or multi-user editing, add a backend (PostGIS + API) and replace the file importer with server queries.
+
 
 
