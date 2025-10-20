@@ -38,12 +38,6 @@ python -m http.server 5173
 # Then browse to http://localhost:5173
 ```
 
-- Or serve with Node (if available):
-```powershell
-npx serve . -l 5173
-# Then browse to http://localhost:5173
-```
-
 ## Using the app
 1. Click "Load sample data" to try it immediately.
 2. Or click the file picker and choose your `.xlsx`, `.xls`, or `.csv` file.
@@ -61,4 +55,5 @@ npx serve . -l 5173
 ## Notes
 - All data stays in your browser. No backend needed; suitable for up to ~50k points depending on device.
 - For larger datasets or multi-user editing, add a backend (PostGIS + API) and replace the file importer with server queries.
+
 
