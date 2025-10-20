@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Infrastructure WebGIS - Interactive Project Mapping</title>
+  <meta name="description" content="Interactive web-based GIS for infrastructure project management. Visualize, filter, and analyze infrastructure projects on an interactive map with real-time data." />
+  <meta name="keywords" content="WebGIS, infrastructure, mapping, Excel, CSV, project management, geospatial" />
+  <meta name="author" content="Rama Wijaya" />
+  
+  <!-- Open Graph meta tags for social sharing -->
+  <meta property="og:title" content="Infrastructure WebGIS - Interactive Project Mapping" />
+  <meta property="og:description" content="Load Excel/CSV files directly in your browser and visualize infrastructure projects on an interactive map with filtering and analysis tools." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="./preview.png" />
+  
+  <!-- Twitter Card meta tags -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Infrastructure WebGIS" />
+  <meta name="twitter:description" content="Interactive mapping for infrastructure project management" />
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>" />
+  
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <!-- MarkerCluster CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+  <link rel="stylesheet" href="./src/styles.css" />
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <header class="app-header" role="banner">
+    <div>
+      <h1>🗺️ Infrastructure WebGIS</h1>
+      <p style="margin: 0; font-size: 12px; color: var(--text-muted); opacity: 0.7;">Made by Rama Wijaya</p>
+    </div>
+    <div class="header-actions">
+      <button id="load-sample-btn" class="btn btn-secondary" title="Load sample infrastructure data">
+        📊 Load Sample Data
+      </button>
+      <label for="file-input" class="btn" style="margin: 0; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
+        📁 Import Data
+      </label>
+      <input id="file-input" type="file" accept=".xlsx,.xls,.csv" style="display: none;" />
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="sidebar" id="sidebar" role="complementary">
+      <section class="panel panel-collapsible">
+        <div class="panel-header" id="mapping-header" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none;">
+          <h2 style="margin: 0; flex: 1;">📋 Column Mapping</h2>
+          <span class="collapse-icon">▼</span>
+        </div>
+        <div class="panel-content" style="margin-top: 12px;">
+          <p class="muted">Auto-detected columns from your file. Adjust mapping if needed to match your data.</p>
+          <div id="mapping-section" class="mapping hidden">
+            <div id="mapping-fields" class="mapping-fields"></div>
+            <button id="apply-mapping-btn" class="btn">✓ Apply Mapping</button>
+          </div>
+          <div id="mapping-auto" class="mapping-auto muted">
+            <span style="font-size: 20px;">📂</span><br>
+            Waiting for data file…
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>🔠 Filters</h2>
+        <div class="form-field">
+          <label for="search-input">🔎 Search</label>
+          <input id="search-input" type="text" placeholder="Search by name or location..." />
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label for="type-select">🏗️ Project Type</label>
+            <select id="type-select" multiple size="6" aria-label="Filter by project type"></select>
+          </div>
+          <div class="form-field">
+            <label for="location-select">📍 Location</label>
+            <select id="location-select" multiple size="6" aria-label="Filter by location"></select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label for="cost-min">💰 Min Cost</label>
+            <input id="cost-min" type="number" min="0" step="any" placeholder="0" />
+          </div>
+          <div class="form-field">
+            <label for="cost-max">💰 Max Cost</label>
+            <input id="cost-max" type="number" min="0" step="any" placeholder="∞" />
+          </div>
+        </div>
+        <div class="form-field checkbox">
+          <input id="extent-checkbox" type="checkbox" />
+          <label for="extent-checkbox">🗺️ Only show projects within current map view</label>
+        </div>
+        <div class="form-actions">
+          <button id="reset-filters-btn" class="btn btn-secondary">↺ Reset Filters</button>
+        </div>
+      </section>
+
+      <section class="panel panel-collapsible">
+        <div class="panel-header" id="layers-header">
+          <h2>🗂️ Data Layers</h2>
+          <span class="collapse-icon">▼</span>
+        </div>
+        <div class="panel-content">
+          <div class="form-field">
+            <label>📊 Project Data</label>
+            <div class="layer-controls">
+              <label class="layer-item">
+                <input type="checkbox" id="projects-layer" checked>
+                <span>Infrastructure Projects</span>
+                <span class="layer-count" id="projects-count">0</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label>🏗️ Spatial Datasets</label>
+            <div class="layer-controls" id="spatial-layers">
+              <div class="muted small">No additional layers imported</div>
+            </div>
+          </div>
+          
+          <div class="form-field">
+            <label for="layer-file-input">📁 Import Layer</label>
+            <input id="layer-file-input" type="file" accept=".geojson,.json,.shp,.zip" multiple>
+            <p class="muted small">Supports GeoJSON, Shapefile (zipped)</p>
+          </div>
+          
+          <div class="form-field">
+            <label>🎨 Active Layer Style</label>
+            <div class="style-controls">
+              <div class="form-row">
+                <div class="form-field">
+                  <label for="layer-opacity">Opacity</label>
+                  <input type="range" id="layer-opacity" min="0" max="1" step="0.1" value="0.7">
+                </div>
+                <div class="form-field">
+                  <label for="layer-color">Color</label>
+                  <input type="color" id="layer-color" value="#3b82f6">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel panel-collapsible">
+        <div class="panel-header" id="charts-header">
+          <h2>📊 Analytics</h2>
+          <span class="collapse-icon">▼</span>
+        </div>
+        <div class="panel-content">
+          <div class="chart-container">
+            <h3>Projects by Type</h3>
+            <canvas id="type-chart" style="max-height: 180px;"></canvas>
+          </div>
+          <div class="chart-container">
+            <h3>Projects by Location</h3>
+            <canvas id="location-chart" style="max-height: 160px;"></canvas>
+          </div>
+          <div class="chart-container">
+            <h3>Cost Distribution</h3>
+            <canvas id="cost-chart" style="max-height: 160px;"></canvas>
+          </div>
+        </div>
+      </section>
+      
+      <section class="panel">
+        <h2>💾 Export Data</h2>
+        <div class="form-actions">
+          <button id="export-csv-btn" class="btn btn-secondary" title="Export filtered data as CSV">
+            📄 CSV
+          </button>
+          <button id="export-geojson-btn" class="btn btn-secondary" title="Export filtered data as GeoJSON">
+            🌐 GeoJSON
+          </button>
+          <button id="google-sheets-btn" class="btn btn-secondary" title="Connect to Google Sheets for live data">
+            📊 Google Sheets
+          </button>
+        </div>
+        <div class="muted small" id="result-count" style="margin-top: 12px; text-align: center; padding: 8px; background: var(--bg-secondary); border-radius: var(--radius);">
+          No data loaded
+        </div>
+      </section>
+
+    </aside>
+
+    <section class="content">
+      <div class="map-container">
+        <div id="map" role="application" aria-label="Interactive map showing infrastructure projects"></div>
+        <div class="map-controls">
+          <div class="measurement-panel" id="measurement-panel">
+            <div class="measurement-header">
+              <h3>📏 Measurement Tools</h3>
+              <button class="btn-toggle-measurements" id="toggle-measurements" title="Toggle measurement tools">🛠️</button>
+            </div>
+            <div class="measurement-content hidden" id="measurement-content">
+              <div class="measurement-tools">
+                <button class="btn btn-secondary measure-btn" id="measure-distance" data-tool="distance">📏 Distance</button>
+                <button class="btn btn-secondary measure-btn" id="measure-area" data-tool="area">📐 Area</button>
+                <button class="btn btn-secondary" id="clear-measurements">🗑️ Clear</button>
+              </div>
+              <div class="measurement-results" id="measurement-results">
+                <div class="measurement-item hidden" id="distance-result">
+                  <label>Distance:</label>
+                  <span id="distance-value">-</span>
+                </div>
+                <div class="measurement-item hidden" id="area-result">
+                  <label>Area:</label>
+                  <span id="area-value">-</span>
+                </div>
+              </div>
+              <div class="measurement-actions">
+                <button class="btn btn-secondary" id="export-measurements">💾 Export</button>
+                <select id="measurement-units">
+                  <option value="metric">Metric (m/km/m²)</option>
+                  <option value="imperial">Imperial (ft/mi/ft²)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="table-panel">
+        <div class="table-panel-header" id="table-panel-header">
+          <div>
+            <h2>📊 Project Data</h2>
+          </div>
+          <div class="actions">
+            <button id="print-btn" class="btn btn-secondary no-print" title="Print or save as PDF">
+              🖨️ Print
+            </button>
+            <span class="collapse-icon">▼</span>
+          </div>
+        </div>
+        <table id="data-table" role="table">
+          <thead>
+            <tr>
+              <th data-sort="name" class="sortable">Project Name <span class="sort-icon">⇅</span></th>
+              <th data-sort="type" class="sortable">Type <span class="sort-icon">⇅</span></th>
+              <th data-sort="status" class="sortable">Status <span class="sort-icon">⇅</span></th>
+              <th data-sort="location" class="sortable">Location <span class="sort-icon">⇅</span></th>
+              <th data-sort="cost" class="sortable num">Cost <span class="sort-icon">⇅</span></th>
+              <th class="no-print">Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <div id="empty-state" class="hidden" style="text-align: center; padding: 60px 20px; color: var(--text-muted);">
+          <div style="font-size: 48px; margin-bottom: 16px;">📭</div>
+          <p style="font-size: 16px; font-weight: 500; margin-bottom: 8px;">No projects to display</p>
+          <p style="font-size: 14px;">Import data or adjust your filters to see results</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Libraries -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+  <!-- SheetJS for Excel/CSV parsing -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <!-- App scripts -->
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

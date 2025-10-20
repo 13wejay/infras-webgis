@@ -1,0 +1,149 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Bridge Replacement A",
+        "type": "Bridge",
+        "location": "Lake County",
+        "cost": 2000000,
+        "status": "In Progress",
+        "startDate": "2024-03-15",
+        "endDate": "2024-12-30",
+        "contractor": "ABC Construction",
+        "description": "Complete replacement of aging bridge over Miller Creek with new steel structure"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-93.6091, 41.6005]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Highway Extension B",
+        "type": "Road",
+        "location": "King County",
+        "cost": 3500000,
+        "status": "Planning",
+        "startDate": "2024-06-01",
+        "endDate": "2025-08-15",
+        "contractor": "Metro Infrastructure",
+        "description": "New 2.5 mile highway extension to connect downtown district with residential areas"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-122.3321, 47.6062]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Regional Medical Center",
+        "type": "Health",
+        "location": "King County",
+        "cost": 15000000,
+        "status": "Completed",
+        "startDate": "2023-01-10",
+        "endDate": "2024-02-28",
+        "contractor": "HealthBuild Corp",
+        "description": "State-of-the-art 150-bed medical facility with emergency and specialty care departments"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-122.4443, 47.2529]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Elementary School Renovation",
+        "type": "Education",
+        "location": "Orange County",
+        "cost": 800000,
+        "status": "On Hold",
+        "startDate": "2024-05-01",
+        "endDate": "2024-11-30",
+        "contractor": "EduBuild LLC",
+        "description": "Comprehensive renovation of 50-year-old elementary school including HVAC and technology upgrades"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-117.8311, 33.7175]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Water Treatment Facility",
+        "type": "Water",
+        "location": "Lake County",
+        "cost": 5600000,
+        "status": "In Progress",
+        "startDate": "2024-02-01",
+        "endDate": "2025-01-15",
+        "contractor": "AquaTech Solutions",
+        "description": "Advanced water treatment plant serving 25000 residents with modern filtration systems"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-81.5190, 41.0912]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Downtown Transit Hub",
+        "type": "Transportation",
+        "location": "Metro District",
+        "cost": 8500000,
+        "status": "Planning",
+        "startDate": "2024-09-01",
+        "endDate": "2026-03-15",
+        "contractor": "Transit Solutions Inc",
+        "description": "Modern multimodal transportation hub connecting bus, rail, and bike share systems"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.0060, 40.7128]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Solar Farm Installation",
+        "type": "Energy",
+        "location": "Rural County",
+        "cost": 12000000,
+        "status": "In Progress",
+        "startDate": "2024-01-15",
+        "endDate": "2024-10-30",
+        "contractor": "Green Energy Corp",
+        "description": "50MW solar photovoltaic farm providing clean energy to 15000 homes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-104.9903, 39.7392]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Community Recreation Center",
+        "type": "Recreation",
+        "location": "Suburban District",
+        "cost": 4200000,
+        "status": "Design",
+        "startDate": "2024-07-01",
+        "endDate": "2025-06-30",
+        "contractor": "Community Builders",
+        "description": "Multi-purpose recreation facility with pool, gymnasium, and community meeting spaces"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-87.6298, 41.8781]
+      }
+    }
+  ]
+}
