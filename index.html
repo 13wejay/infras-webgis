@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebGIS - Infrastructure Projects | By 13Wejay</title>
+    
+    <!-- External CSS Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/frappe-gantt@0.6.1/dist/frappe-gantt.min.css" />
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles/styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-map-marked-alt"></i>
+                <h1>Infras WebGIS <span style="font-size: 0.5em; font-weight: 400; color: #6b7280;">by SPID</span></h1>
+            </div>
+            <nav class="nav-tabs">
+                <button class="nav-tab active" data-view="map">
+                    <i class="fas fa-map"></i>
+                    <span>Map View</span>
+                </button>
+                <button class="nav-tab" data-view="database">
+                    <i class="fas fa-database"></i>
+                    <span>Database</span>
+                </button>
+                <button class="nav-tab" data-view="reports">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Reports</span>
+                </button>
+                <button class="nav-tab" data-view="analytics">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Analytics</span>
+                </button>
+                <button class="nav-tab" data-view="scheduling">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Scheduling</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <!-- Map View -->
+        <div id="map-view" class="view-container active">
+            <div class="map-controls">
+                <button class="map-controls-toggle" id="map-controls-toggle">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                <div class="map-controls-content">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="map-search" placeholder="Search projects...">
+                    </div>
+                <button class="btn btn-primary btn-block" id="add-project-on-map-btn">
+                    <i class="fas fa-map-marker-alt"></i> Add Project on Map
+                </button>                    
+                    <div class="basemap-selector">
+                        <h3>Basemap</h3>
+                        <label class="basemap-option">
+                            <input type="radio" name="basemap" value="OpenStreetMap" checked>
+                            <span><i class="fas fa-map"></i> OpenStreetMap</span>
+                        </label>
+                        <label class="basemap-option">
+                            <input type="radio" name="basemap" value="Satellite">
+                            <span><i class="fas fa-satellite"></i> Satellite</span>
+                        </label>
+                        <label class="basemap-option">
+                            <input type="radio" name="basemap" value="Topography">
+                            <span><i class="fas fa-mountain"></i> Topography</span>
+                        </label>
+                    </div>
+                    
+                    <div class="layer-controls">
+                        <h3>Layer Control</h3>
+                        <!-- Populated dynamically from existing projects -->
+                    </div>
+
+                    <div class="temporary-layers">
+                        <h3>Temporary Layers</h3>
+                        <div id="temporary-layers-list">
+                            <p style="font-size: 0.85em; color: #6b7280; margin: 0;">No temporary layers loaded</p>
+                        </div>
+                        <button class="btn btn-secondary btn-block" onclick="clearAllTemporaryLayers()" style="margin-top: 0.5rem; font-size: 0.85rem;">
+                            <i class="fas fa-trash-alt"></i> Clear All Temporary
+                        </button>
+                    </div>
+
+                    <div class="legend">
+                        <h3>Legend</h3>
+                        <div class="legend-item"><span class="legend-color" style="background: #10b981;"></span> Completed</div>
+                        <div class="legend-item"><span class="legend-color" style="background: #2563eb;"></span> In Progress</div>
+                        <div class="legend-item"><span class="legend-color" style="background: #f59e0b;"></span> Planning</div>
+                        <div class="legend-item"><span class="legend-color" style="background: #ef4444;"></span> On Hold</div>
+                        <div class="legend-item"><span class="legend-color" style="background: #6b7280;"></span> Cancelled</div>
+                    </div>
+
+                    <div class="map-tools">
+                        <h3>Map Tools</h3>
+                        <button class="btn btn-secondary btn-block" id="measure-distance-btn" title="Measure Distance">
+                            <i class="fas fa-ruler"></i> Measure Distance
+                        </button>
+                        <button class="btn btn-secondary btn-block" id="export-map-image-btn" title="Export Map">
+                            <i class="fas fa-camera"></i> Export Image
+                        </button>
+                        <button class="btn btn-secondary btn-block" id="clear-drawings-btn" title="Clear Drawings">
+                            <i class="fas fa-eraser"></i> Clear All
+                        </button>
+                    </div>
+
+                    <div class="map-actions">
+                        <h3>Map Data</h3>
+                        <button class="btn btn-secondary btn-block" onclick="importMapData()">
+                            <i class="fas fa-file-import"></i> Import GeoJSON/SHP
+                        </button>
+                        <button class="btn btn-secondary btn-block" onclick="loadTemporaryLayer()">
+                            <i class="fas fa-layer-group"></i> Load Temporary Layer
+                        </button>
+                        <button class="btn btn-secondary btn-block" onclick="exportMapData()">
+                            <i class="fas fa-file-export"></i> Export GeoJSON
+                        </button>
+                        <button class="btn btn-secondary btn-block" id="reset-map">
+                            <i class="fas fa-redo"></i> Reset View
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="map"></div>
+            
+            <!-- Geocoding Search Box -->
+            <div class="geocoding-search" id="geocoding-search">
+                <input type="text" id="geocoding-input" placeholder="Search address or place...">
+                <button id="geocoding-btn"><i class="fas fa-search"></i></button>
+                <div class="geocoding-results" id="geocoding-results"></div>
+            </div>
+        </div>
+
+        <!-- Database View -->
+        <div id="database-view" class="view-container">
+            <div class="database-header">
+                <h2>Infrastructure Projects Database</h2>
+                <div class="database-actions">
+                    <button class="btn btn-primary" id="add-project-btn">
+                        <i class="fas fa-plus"></i> Add Project
+                    </button>
+                    <button class="btn btn-secondary" id="import-btn">
+                        <i class="fas fa-file-import"></i> Import
+                    </button>
+                    <div class="export-dropdown">
+                        <button class="btn btn-secondary" id="export-btn">
+                            <i class="fas fa-file-export"></i> Export
+                        </button>
+                        <div class="dropdown-menu" id="export-menu">
+                            <button data-format="excel"><i class="fas fa-file-excel"></i> Export to Excel</button>
+                            <button data-format="csv"><i class="fas fa-file-csv"></i> Export to CSV</button>
+                            <button data-format="geojson"><i class="fas fa-map"></i> Export to GeoJSON</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Panel -->
+            <div class="filter-panel" id="filter-panel">
+                <button class="filter-toggle" id="filter-toggle">
+                    <i class="fas fa-filter"></i> Filters
+                </button>
+                <div class="filter-content">
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label>Project Type</label>
+                            <select id="filter-type" multiple>
+                                <!-- Populated dynamically from existing projects -->
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Status</label>
+                            <select id="filter-status" multiple>
+                                <option value="Planning">Planning</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Completed">Completed</option>
+                                <option value="On Hold">On Hold</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Location</label>
+                            <input type="text" id="filter-location" placeholder="Enter location...">
+                        </div>
+                        <div class="filter-group">
+                            <label>Contractor/Vendor</label>
+                            <input type="text" id="filter-contractor" placeholder="Enter contractor...">
+                        </div>
+                    </div>
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label>Start Date From</label>
+                            <input type="date" id="filter-start-from">
+                        </div>
+                        <div class="filter-group">
+                            <label>Start Date To</label>
+                            <input type="date" id="filter-start-to">
+                        </div>
+                        <div class="filter-group">
+                            <label>Finish Date From</label>
+                            <input type="date" id="filter-finish-from">
+                        </div>
+                        <div class="filter-group">
+                            <label>Finish Date To</label>
+                            <input type="date" id="filter-finish-to">
+                        </div>
+                    </div>
+                    <div class="filter-actions">
+                        <button class="btn btn-primary" id="apply-filters">Apply Filters</button>
+                        <button class="btn btn-secondary" id="clear-filters">Clear Filters</button>
+                        <span class="filter-results" id="filter-results"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table Container -->
+            <div class="table-container">
+                <table class="data-table" id="projects-table">
+                    <thead>
+                        <tr>
+                            <th data-sort="projectName">Project Name <i class="fas fa-sort"></i></th>
+                            <th data-sort="projectType">Project Type <i class="fas fa-sort"></i></th>
+                            <th data-sort="location">Location <i class="fas fa-sort"></i></th>
+                            <th data-sort="latitude">Latitude <i class="fas fa-sort"></i></th>
+                            <th data-sort="longitude">Longitude <i class="fas fa-sort"></i></th>
+                            <th data-sort="status">Status <i class="fas fa-sort"></i></th>
+                            <th data-sort="startDate">Start Date <i class="fas fa-sort"></i></th>
+                            <th data-sort="finishDate">Finish Date <i class="fas fa-sort"></i></th>
+                            <th data-sort="contractor">Contractor <i class="fas fa-sort"></i></th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <!-- Table rows populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="pagination">
+                <!-- Pagination controls populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Reports View -->
+        <div id="reports-view" class="view-container">
+            <div class="reports-layout">
+                <aside class="reports-sidebar">
+                    <div class="reports-header">
+                        <h2>Reporting Records</h2>
+                        <button class="btn btn-primary" id="new-report-btn">
+                            <i class="fas fa-plus"></i> New Report
+                        </button>
+                    </div>
+                    
+                    <!-- Report Filters -->
+                    <div class="reports-filters">
+                        <div class="filter-group">
+                            <label><i class="fas fa-search"></i> Search by Title</label>
+                            <input type="text" id="report-search" placeholder="Search reports..." class="filter-input">
+                        </div>
+                        <div class="filter-group">
+                            <label><i class="fas fa-project-diagram"></i> Filter by Project</label>
+                            <select id="report-project-filter" class="filter-select">
+                                <option value="">All Projects</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label><i class="fas fa-calendar"></i> Date Range</label>
+                            <div class="date-range">
+                                <input type="date" id="report-date-from" class="filter-input" placeholder="From">
+                                <span style="padding: 0 0.25rem;">-</span>
+                                <input type="date" id="report-date-to" class="filter-input" placeholder="To">
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary btn-sm" onclick="clearReportFilters()" style="width: 100%; margin-top: 0.5rem;">
+                            <i class="fas fa-times"></i> Clear Filters
+                        </button>
+                    </div>
+                    
+                    <div class="reports-list" id="reports-list">
+                        <!-- Report cards populated by JavaScript -->
+                    </div>
+                </aside>
+                <div class="reports-content">
+                    <div class="empty-state" id="report-empty-state">
+                        <i class="fas fa-file-alt"></i>
+                        <p>Select a report or create a new one</p>
+                    </div>
+                    <div class="report-viewer" id="report-viewer" style="display: none;">
+                        <!-- Report detail view populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics View -->
+        <div id="analytics-view" class="view-container">
+            <div class="analytics-header">
+                <h2><i class="fas fa-chart-bar"></i> Project Dashboard</h2>
+                <button class="btn btn-secondary" onclick="refreshAnalytics()">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+
+            <!-- Analytics Filters -->
+            <div class="filter-panel" id="analytics-filter-panel">
+                <button class="filter-toggle" id="analytics-filter-toggle">
+                    <i class="fas fa-filter"></i> Filters
+                </button>
+                <div class="filter-content" style="display: none;">
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label>Project Type</label>
+                            <select id="analytics-type-filter" multiple>
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Location</label>
+                            <select id="analytics-location-filter" multiple>
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Start Date From</label>
+                            <input type="date" id="analytics-start-from">
+                        </div>
+                        <div class="filter-group">
+                            <label>Start Date To</label>
+                            <input type="date" id="analytics-start-to">
+                        </div>
+                    </div>
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label>Finish Date From</label>
+                            <input type="date" id="analytics-finish-from">
+                        </div>
+                        <div class="filter-group">
+                            <label>Finish Date To</label>
+                            <input type="date" id="analytics-finish-to">
+                        </div>
+                        <div class="filter-group" style="display: flex; align-items: center; padding-top: 1.5rem;">
+                            <label style="display: flex; align-items: center; gap: 0.5rem; margin: 0; cursor: pointer;">
+                                <input type="checkbox" id="analytics-exclude-hgu">
+                                <span>Exclude HGU</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="filter-actions">
+                        <button class="btn btn-primary" id="analytics-apply-filters">Apply Filters</button>
+                        <button class="btn btn-secondary" id="analytics-clear-filters">Clear Filters</button>
+                        <span class="filter-results" id="analytics-filter-results"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <div class="summary-icon" style="background: var(--primary);">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3 id="total-projects">0</h3>
+                        <p>Total Projects</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon" style="background: var(--success);">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3 id="completed-projects">0</h3>
+                        <p>Completed</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon" style="background: var(--warning);">
+                        <i class="fas fa-spinner"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3 id="inprogress-projects">0</h3>
+                        <p>In Progress</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon" style="background: var(--danger);">
+                        <i class="fas fa-pause-circle"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3 id="delayed-projects">0</h3>
+                        <p>Delayed</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Grid -->
+            <div class="dashboard-grid">
+                <!-- Project Status Chart -->
+                <div class="dashboard-card">
+                    <h3><i class="fas fa-tasks"></i> Project Status</h3>
+                    <div id="status-chart" class="chart-container"></div>
+                </div>
+
+                <!-- Project Type Chart -->
+                <div class="dashboard-card">
+                    <h3><i class="fas fa-layer-group"></i> Project Types</h3>
+                    <div id="type-chart" class="chart-container"></div>
+                </div>
+
+                <!-- Location Chart -->
+                <div class="dashboard-card">
+                    <h3><i class="fas fa-map-marker-alt"></i> Project Locations</h3>
+                    <div id="location-chart" class="chart-container"></div>
+                </div>
+
+                <!-- Contractor Chart -->
+                <div class="dashboard-card">
+                    <h3><i class="fas fa-hard-hat"></i> Top 5 Contractors</h3>
+                    <div id="contractor-chart" class="chart-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scheduling View -->
+        <div id="scheduling-view" class="view-container">
+            <div class="scheduling-header">
+                <h2><i class="fas fa-calendar-alt"></i> Project Timeline & Scheduling</h2>
+                <div class="scheduling-actions">
+                    <button class="btn btn-secondary" onclick="refreshScheduling()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+            </div>
+
+            <!-- Scheduling Filters -->
+            <div class="filter-panel" id="scheduling-filter-panel">
+                <button class="filter-toggle" id="scheduling-filter-toggle">
+                    <i class="fas fa-filter"></i> Filters
+                </button>
+                <div class="filter-content" style="display: none;">
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label>Project Type</label>
+                            <select id="scheduling-type-filter" multiple>
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Status</label>
+                            <select id="scheduling-status-filter" multiple>
+                                <option value="Planning">Planning</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Completed">Completed</option>
+                                <option value="On Hold">On Hold</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Contractor</label>
+                            <input type="text" id="scheduling-contractor-filter" placeholder="Enter contractor...">
+                        </div>
+                    </div>
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label>Date From</label>
+                            <input type="date" id="scheduling-date-from">
+                        </div>
+                        <div class="filter-group">
+                            <label>Date To</label>
+                            <input type="date" id="scheduling-date-to">
+                        </div>
+                    </div>
+                    <div class="filter-actions">
+                        <button class="btn btn-primary" id="scheduling-apply-filters">Apply Filters</button>
+                        <button class="btn btn-secondary" id="scheduling-clear-filters">Clear Filters</button>
+                        <span class="filter-results" id="scheduling-filter-results"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gantt Controls -->
+            <div class="gantt-controls">
+                <div class="gantt-controls-left">
+                    <span class="gantt-info" id="gantt-project-count">0 projects</span>
+                </div>
+                <div class="gantt-controls-right">
+                    <label>View Mode:</label>
+                    <div class="btn-group">
+                        <button class="btn btn-sm" data-view-mode="Day">Day</button>
+                        <button class="btn btn-sm active" data-view-mode="Week">Week</button>
+                        <button class="btn btn-sm" data-view-mode="Month">Month</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gantt Chart Container -->
+            <div class="gantt-wrapper">
+                <div id="gantt-chart"></div>
+            </div>
+
+            <!-- Legend -->
+            <div class="gantt-legend">
+                <h3>Status Legend</h3>
+                <div class="legend-items">
+                    <div class="legend-item"><span class="legend-color" style="background: #10b981;"></span> Completed</div>
+                    <div class="legend-item"><span class="legend-color" style="background: #2563eb;"></span> In Progress</div>
+                    <div class="legend-item"><span class="legend-color" style="background: #f59e0b;"></span> Planning</div>
+                    <div class="legend-item"><span class="legend-color" style="background: #ef4444;"></span> On Hold</div>
+                    <div class="legend-item"><span class="legend-color" style="background: #6b7280;"></span> Cancelled</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Container -->
+    <div class="modal" id="modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title"></h2>
+                <button class="modal-close" id="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Modal content populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container">
+        <!-- Toast notifications populated by JavaScript -->
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner">
+            <div class="spinner-ring"></div>
+            <div class="spinner-ring"></div>
+            <div class="spinner-ring"></div>
+            <div class="loading-text" id="loading-text">Loading...</div>
+        </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="progress-bar-container" id="progress-bar-container">
+        <div class="progress-bar" id="progress-bar"></div>
+    </div>
+
+    <!-- External JavaScript Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/shpjs/4.0.4/shp.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/frappe-gantt@0.6.1/dist/frappe-gantt.min.js"></script>
+
+    <!-- Tools JavaScript -->
+    <script src="js/utils.js"></script>
+    <script src="js/data-manager.js"></script>
+    <script src="js/handler/map-handler.js"></script>
+    <script src="js/handler/table-handler.js"></script>
+    <script src="js/handler/report-handler.js"></script>
+    <script src="/js/handler/analytics-handler.js"></script>
+    <script src="js/handler/scheduling-handler.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
