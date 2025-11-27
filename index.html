@@ -95,28 +95,6 @@
                         </button>
                     </div>
 
-                    <div class="legend">
-                        <h3>Legend</h3>
-                        <div class="legend-item"><span class="legend-color" style="background: #10b981;"></span> Completed</div>
-                        <div class="legend-item"><span class="legend-color" style="background: #2563eb;"></span> In Progress</div>
-                        <div class="legend-item"><span class="legend-color" style="background: #f59e0b;"></span> Planning</div>
-                        <div class="legend-item"><span class="legend-color" style="background: #ef4444;"></span> On Hold</div>
-                        <div class="legend-item"><span class="legend-color" style="background: #6b7280;"></span> Cancelled</div>
-                    </div>
-
-                    <div class="map-tools">
-                        <h3>Map Tools</h3>
-                        <button class="btn btn-secondary btn-block" id="measure-distance-btn" title="Measure Distance">
-                            <i class="fas fa-ruler"></i> Measure Distance
-                        </button>
-                        <button class="btn btn-secondary btn-block" id="export-map-image-btn" title="Export Map">
-                            <i class="fas fa-camera"></i> Export Image
-                        </button>
-                        <button class="btn btn-secondary btn-block" id="clear-drawings-btn" title="Clear Drawings">
-                            <i class="fas fa-eraser"></i> Clear All
-                        </button>
-                    </div>
-
                     <div class="map-actions">
                         <h3>Map Data</h3>
                         <button class="btn btn-secondary btn-block" onclick="importMapData()">
@@ -136,6 +114,31 @@
             </div>
             
             <div id="map"></div>
+            
+            <!-- Bottom Left Panel -->
+            <div class="map-bottom-left-panel">
+                <div class="legend">
+                    <h3>Legend</h3>
+                    <div class="legend-item"><span class="legend-color" style="background: #10b981;"></span> Completed</div>
+                    <div class="legend-item"><span class="legend-color" style="background: #2563eb;"></span> In Progress</div>
+                    <div class="legend-item"><span class="legend-color" style="background: #f59e0b;"></span> Planning</div>
+                    <div class="legend-item"><span class="legend-color" style="background: #ef4444;"></span> On Hold</div>
+                    <div class="legend-item"><span class="legend-color" style="background: #6b7280;"></span> Cancelled</div>
+                </div>
+
+                <div class="map-tools">
+                    <h3>Map Tools</h3>
+                    <button class="btn btn-secondary btn-block" id="measure-distance-btn" title="Measure Distance">
+                        <i class="fas fa-ruler"></i> Measure Distance
+                    </button>
+                    <button class="btn btn-secondary btn-block" id="export-map-image-btn" title="Export Map">
+                        <i class="fas fa-camera"></i> Export Image
+                    </button>
+                    <button class="btn btn-secondary btn-block" id="clear-drawings-btn" title="Clear Drawings">
+                        <i class="fas fa-eraser"></i> Clear All
+                    </button>
+                </div>
+            </div>
             
             <!-- Geocoding Search Box -->
             <div class="geocoding-search" id="geocoding-search">
@@ -512,19 +515,7 @@
             <!-- Gantt Chart Container -->
             <div class="gantt-wrapper">
                 <div id="gantt-chart"></div>
-            </div>
-
-            <!-- Legend -->
-            <div class="gantt-legend">
-                <h3>Status Legend</h3>
-                <div class="legend-items">
-                    <div class="legend-item"><span class="legend-color" style="background: #10b981;"></span> Completed</div>
-                    <div class="legend-item"><span class="legend-color" style="background: #2563eb;"></span> In Progress</div>
-                    <div class="legend-item"><span class="legend-color" style="background: #f59e0b;"></span> Planning</div>
-                    <div class="legend-item"><span class="legend-color" style="background: #ef4444;"></span> On Hold</div>
-                    <div class="legend-item"><span class="legend-color" style="background: #6b7280;"></span> Cancelled</div>
-                </div>
-            </div>
+            </div>         
         </div>
     </main>
 
@@ -584,4 +575,3 @@
     <script src="js/app.js"></script>
 </body>
 </html>
-
