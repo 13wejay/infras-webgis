@@ -1396,7 +1396,7 @@ function onMeasureDistanceClick(e) {
         L.marker(midPoint, {
             icon: L.divIcon({
                 className: 'distance-label',
-                html: `<div style="background: white; padding: 4px 8px; border-radius: 4px; border: 2px solid #ef4444; font-weight: bold; font-size: 12px; white-space: nowrap;">${distance}</div>`,
+                html: `<div style="background: white;padding: 4px 60px 4px 12px;border-radius: 6px;border: 2px solid #ef4444;font-weight: bold;font-size: 12px;white-space: nowrap;margin-top: -36px;">${distance}</div>`,
                 iconAnchor: [0, 0]
             })
         }).addTo(measurementLayer);
