@@ -384,7 +384,7 @@ body {
 }
 
 .legend {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .legend-item {
@@ -449,7 +449,7 @@ body {
 }
 
 .map-tools {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .map-tools h3 {
@@ -464,9 +464,7 @@ body {
 }
 
 .map-actions {
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border);
+    margin-bottom: 1rem;
 }
 
 .map-actions h3 {
@@ -474,6 +472,32 @@ body {
     font-weight: 600;
     margin-bottom: 0.75rem;
     color: var(--text);
+}
+
+/* Bottom Left Panel */
+.map-bottom-left-panel {
+    position: absolute;
+    bottom: 1rem;
+    left: 1rem;
+    background: var(--white);
+    border-radius: 0.5rem;
+    box-shadow: var(--shadow-lg);
+    padding: 1rem;
+    max-width: 200px;
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.map-bottom-left-panel h3 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--text);
+}
+
+.map-bottom-left-panel .btn {
+    margin-bottom: 0.5rem;
 }
 
 /* Geocoding Search Box */
@@ -2497,28 +2521,6 @@ body {
     font-size: 0.8rem;
     color: var(--text-light);
     font-style: italic;
-}
-
-/* Gantt Legend */
-.gantt-legend {
-    background: var(--white);
-    padding: 1rem 2rem;
-    border-radius: 0.5rem;
-    box-shadow: var(--shadow);
-    margin: 0 2rem 2rem 2rem;
-}
-
-.gantt-legend h3 {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--text);
-    margin-bottom: 0.75rem;
-}
-
-.gantt-legend .legend-items {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.5rem;
 }
 
 /* Empty State */
