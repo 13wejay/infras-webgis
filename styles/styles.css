@@ -2461,32 +2461,6 @@ body {
     opacity: 1;
 }
 
-/* Status-based colors for Gantt bars */
-.gantt .bar.status-completed {
-    fill: #10b981;
-    stroke: #059669;
-}
-
-.gantt .bar.status-in-progress {
-    fill: #2563eb;
-    stroke: #1d4ed8;
-}
-
-.gantt .bar.status-planning {
-    fill: #f59e0b;
-    stroke: #d97706;
-}
-
-.gantt .bar.status-on-hold {
-    fill: #ef4444;
-    stroke: #dc2626;
-}
-
-.gantt .bar.status-cancelled {
-    fill: #6b7280;
-    stroke: #4b5563;
-}
-
 /* Gantt Popup */
 .gantt-popup {
     padding: 0;
@@ -2717,3 +2691,4 @@ body {
         width: 100%;
     }
 }
+
